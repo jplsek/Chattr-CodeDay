@@ -7,7 +7,7 @@ This was a project I worked on during my 24 hours of coding for CodeDay at Bosto
 
 All that needs to be done is to include the script into your website and your good to go! (not fully working yet.. read on)
 
-** Warnings **
+### Warnings
 
 * This was hacked together in less than 24 hours, most of which was a learning experience, as I rarely ever use Javascript.
 
@@ -15,7 +15,9 @@ All that needs to be done is to include the script into your website and your go
 
 * Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups, others that I can't think of because I'm tired.
 
-** Features that NEED to be added **
+### Features that NEED to be added
+
+* Unique identifiers for websites using this plugin without using their own firebase
 
 * Ability to easily change the Firebase location
 
@@ -29,7 +31,7 @@ All that needs to be done is to include the script into your website and your go
 
 * Later: bookmarklet for users to use for themselves on ANY website!
 
-** Current Features **
+### Current Features
 
 * Can easily embed into a website
 
@@ -39,7 +41,7 @@ All that needs to be done is to include the script into your website and your go
 
 * All shown and stored in real-time using the Firebase API
 
-** Installation **
+### Installation
 
 1. (temp): Download the js and css
 
@@ -49,7 +51,7 @@ All that needs to be done is to include the script into your website and your go
 
 4. Done?
 
-** Other **
+### Other
 
 I'm exhausted, and I'm forgetting what else to add. I have a few projects for school that I need to finish up before I can start working on there personal projects (1-2 weeks?).
 
