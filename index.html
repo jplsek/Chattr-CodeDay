@@ -13,16 +13,31 @@
         }
     </style>
     
-    <!-- reuqired (all you need!) -->
+    <!-- required (all you need!) -->
     
-    <script src="chatapp.js"></script>
+    <script src="chattr.js"></script>
+    
+    <script>
+        
+        /* 
+        
+        To use a personal firebase database, change the variable 
+        for example:
+            firebaseURL = "https://mydatabase.firebaseio.com/";
+        
+        */
+        
+        firebaseURL = "https://chatappcd.firebaseio.com/"+window.location.hostname+"/chat"; // your firebase URL
+    
+    </script>
     
     <!-- end -->
     
 </head>
 <body>
     
-    <h1>ChatApp!</h1>
+    <h1>Chattr!</h1>
+    <small>This is an alpha version. Please do not use this in production until it hits beta! Right now, this has been only tested in firefox.</small>
     
 </body>
 </html>

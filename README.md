@@ -13,15 +13,9 @@ All that needs to be done is to include the script into your website and your go
 
 * There are a lot of bugs right now, as most of the features were rushed together in the last few hours of CodeDay.
 
-* Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups, others that I can't think of because I'm tired.
+* Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups, some things while using webkit browsers don't work (changing groups), current group function doesn't work after cancelling creating a group (fix later: check group by looking at firebase, not manually), added spaces to groups names mess group lists up.
 
 ### Features that NEED to be added
-
-* Unique identifiers for websites using this plugin without using their own firebase
-
-* Ability to easily change the Firebase location
-
-* Ability to use it properly as intended (style.css is locally set, and the goal is to use the script with a CDN, not by downloading it, unless you want to.)
 
 * Upload files (click button to show pane of text when a file is uploaded?)
 
@@ -29,7 +23,9 @@ All that needs to be done is to include the script into your website and your go
 
 * Removal of groups
 
-* Later: bookmarklet for users to use for themselves on ANY website!
+* Fix bugs / warnings
+
+* Later (not needed for a beta version): bookmarklet for users to use for themselves on ANY website!
 
 ### Current Features
 
