@@ -1,4 +1,4 @@
-ChatApp-CodeDay
+Chattr-CodeDay
 ===============
 
 An embedded website plugin allowing chats on any website (goal)
