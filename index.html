@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chat App</title>
+    <title>Chattr!</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.8">
     <style>
         body{
             font-family:helvetica;
         }
-        h1{
+        h1,h3{
             font-weight: 400;
         }
     </style>
@@ -25,9 +25,12 @@
         for example:
             firebaseURL = "https://mydatabase.firebaseio.com/";
         
+        Then remove yourURL.
+        
         */
         
-        firebaseURL = "https://chatappcd.firebaseio.com/"+window.location.hostname+"/chat"; // your firebase URL
+        yourURL = window.location.hostname.replace('.','-'); // grabs website URL, firebase cannot have periods...
+        firebaseURL = "https://chatappcd.firebaseio.com/"+yourURL+"/chat"; // your firebase URL
     
     </script>
     
@@ -37,7 +40,17 @@
 <body>
     
     <h1>Chattr!</h1>
-    <small>This is an alpha version. Please do not use this in production until it hits beta! Right now, this has been only tested in firefox.</small>
+    <p><small>This is an alpha version. Please do not use this in production until it hits beta! Right now, this has been only tested in firefox.</small></p>
+    
+    <h3>Set up with:</h3>
+    <code><pre>
+        
+        &lt;script src="chattr.js"&gt;&lt;/script&gt;
+        &lt;script&gt;
+            firebaseURL = "https://mydatabase.firebaseio.com/";
+        &lt;/script&gt;
+        
+    </pre></code>
     
 </body>
 </html>

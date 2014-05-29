@@ -125,7 +125,7 @@ function chattr(){
             
             fb.once('value', function(snapshot) {
                 if (snapshot.val() === null) {
-                    fb.push({name: 'Chattr', text: 'Welcome to the '+group+' group!' });
+                    fb.push({name: 'Chattr!', text: 'Welcome to the '+group+' group!' });
                 }
                 
                 console.log("added a default message to: "+group);
@@ -171,6 +171,9 @@ function chattr(){
             } else {
                 
                 group = $('#addGroupInput').val();
+                
+                group = group.replace(' ','_');
+                group = group.replace('.','-');
                 
                 $("#addGroupInput").remove();
                 
@@ -264,9 +267,15 @@ function chattr(){
         }
 
         //clicking an existing group
-        function clickGroup(event){
+        function clickGroup(){
             
-            console.log("clicking exsist group...");
+            /* This function runs the same ammount of times as there are databases for some reason */
+            
+            console.log("clicking exsisting group: "+$(this).val());
+            
+            group = $(this).val();
+            
+            //if (typeof(this.selectedIndex) != 'undefined') check(this.selectedIndex)
                     
             // remove prevous chat and stop previous js
             
@@ -277,8 +286,6 @@ function chattr(){
             
             Firebase.goOffline(); // gets offline for new fb
             
-            
-            var group = event.target.id;
             fb = new Firebase(firebaseURL+"/groups/"+group);
             
             Firebase.goOnline();
@@ -456,14 +463,14 @@ function chattr(){
             
             // show group list
             fbGroups.on('child_added', function(snapshot) {
-                $('<option class="select-group"/>')
+                $('<option/>')
                     .attr('id', getMessageId(snapshot))
                     .text(getMessageId(snapshot))
                     .appendTo($('#capanel .selectGroups'));
                     
                 scroll();
                 
-                $('.select-group').click(clickGroup); // clicking .select-group in chrome doesnt work?
+                $('.selectGroups').change(clickGroup); // clicking .select-group in chrome doesnt work?
             });
             
         });
@@ -608,11 +615,11 @@ function chattr(){
                     <div class="drops">\
                     Groups:\
                     <select class="button selectGroups">\
-                        <option></option>\
+                        <option style="display:none"></option>\
                     </select>\
                     <br/>Users:\
                     <select class="button selectUsers">\
-                        <option></option>\
+                        <option style="display:none"></option>\
                     </select>\
                     </div>\
                 </div>\
