@@ -13,7 +13,7 @@ All that needs to be done is to include the script into your website and your go
 
 * There are a lot of bugs right now, as most of the features were rushed together in the last few hours of CodeDay.
 
-* Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups/ just doesnt work how it should, "add > add group > add > cancel button doesnt pop up"
+* Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups/ just doesn't work how it should, "add > add group > add > cancel button doesn't pop up"
 
 ### Features that NEED to be added
 
@@ -30,8 +30,6 @@ All that needs to be done is to include the script into your website and your go
 6. Beta?
 
 * Fix bugs / warnings
-
-* Later (not needed for a beta version): bookmarklet for users to use for themselves on ANY website!
 
 ### Current Features
 

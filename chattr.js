@@ -6,13 +6,13 @@ function makeUI(){
 
     yourURL = window.location.hostname.replace('.','-'); // grabs website URL, firebase cannot have periods...
     firebaseURL = "https://chatappcd.firebaseio.com/"+yourURL+"/chat"; /* default to handle multiple sites */
-    
+
     injectDependencies();
-    
+
     // waits for dependencies
     setTimeout(function(){
         chattr(); // runs actual app
-    }, 1000); 
+    }, 1000);
 }
 
 function injectDependencies(){
@@ -24,7 +24,7 @@ function injectDependencies(){
         jqElement.src  = "//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js";
         head.appendChild(jqElement);
     }
-    
+
     // Add Firebase
     var fbElement = document.createElement('script');
     fbElement.src  = "//cdn.firebase.com/js/client/1.0.15/firebase.js";
@@ -44,41 +44,41 @@ function chattr(){
     });
 
     $(document).ready(function() {
-    
+
         $(document).ready(function() {
-            
-            
+
+
             $("#shrink").hide();
-            
+
             $('#capanel').hide();
             $('#capanel-toggle').click(function(){
                 $('#capanel').toggle();
                 $('#capanel-toggle').toggle();
             });
-            
+
         });
-            
+
         // date style
         function newDate(){
 
             var date    = new Date();
-            var hours   = date.getHours(); 
-            var minutes = date.getMinutes(); 
+            var hours   = date.getHours();
+            var minutes = date.getMinutes();
             var seconds = date.getSeconds();
-            
+
             hours   = hours   < 10 ? "0"+hours   : ""+hours;
             minutes = minutes < 10 ? "0"+minutes : ""+minutes;
             seconds = seconds < 10 ? "0"+seconds : ""+seconds;
-            
+
             return time = hours+":"+minutes+":"+seconds;
-            
+
         }
-    
+
         // get the nicer unique ID
         function getMessageId(snapshot) {
           return snapshot.name().replace(/[^a-z0-9\-\_]/gi,'');
         }
-        
+
         // get the unique ID
         function getId(snapshot) {
           return snapshot.name();
@@ -98,52 +98,52 @@ function chattr(){
                     .append($('<div class="out"/>')
                     .text(message.text))
                     .appendTo($('#capanel .textbox'));
-                    
+
                 scroll();
-                
+
             });
-            
+
         }
 
         // scrolls down when called
         function scroll(){
-            
+
             $('#capanel .textbox').scrollTop($('#capanel .textbox').prop("scrollHeight"));
-            
+
         }
 
         // shows the group the the user is in
         function showGroup(group){
-            
+
             $('#currentGroup').remove();
-            
+
             $(".group").show();
 
             $('<span id="currentGroup"/>')
                 .text(group)
                 .appendTo($('.group'));
-                    
+
             console.log("show group: "+group);
 
         }
 
         // shows this message when creating a new group that is empty
         function defaultMessage(fb, group){
-            
+
             fb.once('value', function(snapshot) {
                 if (snapshot.val() === null) {
                     fb.push({name: 'Chattr!', text: 'Welcome to the '+group+' group!' });
                 }
-                
+
                 console.log("added a default message to: "+group);
-                
+
             });
-            
+
         }
 
         // sends the message the user wrote
         function send(fb){
-            
+
             // updates the username
             if ($('#capanel-name').val() != fbUserName){
                 fbUser.update({name:$('#capanel-name').val()});
@@ -163,60 +163,60 @@ function chattr(){
                 fb.push({name:name, text:text, time:time});
                 $('#capanel-text').val('');
             }
-            
+
             console.log("Sending message...");
-            
+
             scroll();
-            
+
         }
 
         // create group from button
         function createGroup(fbGropus){
-            
+
             if ($('#addGroupInput').val() == ''){
                 // do nothing
             } else {
-                
+
                 group = $('#addGroupInput').val();
-                
+
                 group = group.replace(' ','_');
                 group = group.replace('.','-');
-                
+
                 $("#addGroupInput").hide();
-                
+
                 fb.off(); // turns off the chat
-                
+
                 Firebase.goOffline(); // gets offline for new fb
-                
+
                 fb = new Firebase(firebaseURL+"/groups/"+group);
-                
+
                 $(".message").remove();
                 $(".group").hide();
-                
+
                 console.log("CreateGroup: "+group);
-                
+
                 showGroup(group);
-                
+
                 Firebase.goOnline();
-                
+
                 //console.log(fb);
-                
+
                 showMessages(fb)
-                
+
                 defaultMessage(fb, group);
-                
+
                 addGroupBtn()
-                
+
                 scroll();
-                
+
             }
-            
+
             console.log("create group...");
-            
+
             scroll();
-            
+
         }
-        
+
         function cancelGroup(group){
             $(".cancelGroup").hide();
             $("#addGroupInput").hide();
@@ -224,45 +224,45 @@ function chattr(){
             addGroupBtn();
             console.log("cancelGroup: "+group);
         }
-        
+
         // adding the group button to the page
         function addGroupBtn(){
-            
+
             $('.addGroup').show();
-                
+
         }
 
         //clicking an existing group
         function clickGroup(){
-            
+
             /* This function runs the same ammount of times as there are databases for some reason */
-            
+
             console.log("clicking exsisting group: "+$(this).val());
-            
+
             group = $(this).val(); // grabs option text
-            
+
             // remove prevous chat and stop previous js
-            
+
             $(".message").remove();
             $(".group").hide();
-            
+
             fb.off(); // turns off the chat
-            
+
             Firebase.goOffline(); // gets offline for new fb
-            
+
             fb = new Firebase(firebaseURL+"/groups/"+group);
-            
+
             Firebase.goOnline();
-            
+
             //console.log(fb);
-            
+
             showMessages(fb)
             showGroup(group);
-            
+
             defaultMessage(fb, group);
-            
+
             scroll();
-            
+
         }
 
         function listUsers(){
@@ -272,8 +272,8 @@ function chattr(){
                     .attr('id', getMessageId(snapshot))
                     .text(message.name)
                     .appendTo($('#capanel .selectUsers'));
-                    
-            
+
+
             });
         }
 
@@ -285,10 +285,10 @@ function chattr(){
             // all records after the last continue to invoke this function
             //console.log(idName);
             //console.log(++cnt);
-           
-            
+
+
             if (cnt == 1){ // lastUser gets ran twice, so adding 1
-                
+
                 idName = getId(snapshot);
                 fbUser = new Firebase(firebaseURL+"/users/"+idName);
                 fbUser.onDisconnect().remove(function(){
@@ -296,13 +296,13 @@ function chattr(){
                 });
                 console.log('deleteLAST:'+idName);
                 cnt=+10000;
-                
+
             }
             console.log(++cnt);
-            
+
             // IF YOU CAN GET THIS WORKING WITHOUT A TIMEOUT, GOOD LUCK!
             setTimeout(function(){
-                
+
                 console.log(cnt+":250");
                 if (cnt == 1){
                     idName = getId(snapshot);
@@ -312,52 +312,52 @@ function chattr(){
                     });
                     console.log('deleteONE:'+idName);
                     cnt=+10000;
-                } 
-            }, 1500); 
+                }
+            }, 1500);
 
         }
-            
+
         $(document).ready(function() {
 
             console.log("Using url: "+firebaseURL);
-            
+
             fbGroups = new Firebase(firebaseURL+"/groups");
-            
+
             if ($('#capanel-name').val() == ''){
                 username = 'Anonymous';
                 //$('#capanel-name').val('Anonymous')
             } else {
                 var username = $('#capanel-name').val();
             }
-            
-            
-            
+
+
+
             fbUsers = new Firebase(firebaseURL+"/users/");
-            
-            
+
+
             fbUsers.push({name:username});
-            
+
             // retrieve the last record
             fbUsers.endAt().limit(1).on('child_added', lastUser);
-            
+
             // Gets the user
             setTimeout(function(){
-                
+
                 console.log(fbUser.toString());
-                
+
                 fbUser.on('value', function(snapshot) {
-                    
+
                     fbUserName = snapshot.val().name;
-                       
+
                     listUsers();
-                
+
                 });
-                
+
                 scroll();
-                
-            }, 2500); 
-            
-            
+
+            }, 2500);
+
+
             fbUsers.on('child_changed', function(snapshot) {
               var message = snapshot.val();
               var fbUserChanged = $('.selectUsers').children('#' + getMessageId(snapshot));
@@ -368,35 +368,35 @@ function chattr(){
                     .appendTo($('#capanel .selectUsers'));
               }
             });
-            
+
             fbUsers.on('child_removed', function(snapshot) {
                   var fbUserRemoved = $('.selectUsers').children('#' + getMessageId(snapshot));
                   if (fbUserRemoved) {
                         fbUserRemoved.remove();
                   }
             });
-            
-            
+
+
             var group = 'default';
             fb = new Firebase(firebaseURL+"/groups/"+group);
-            
+
             //console.log(fb);
-            
+
             // checks when the user presses enter in the text box
             $("#capanel-text").keypress(function(e) {
                 if (e.keyCode == 13) {
-                    
+
                     send(fb)
-                    
+
                 }
             });
-            
+
             $("#capanel-submit").click(function() {
-                
+
                 send(fb)
-                
+
             });
-            
+
             $("#capanel #enlarge").click(function(){
                 $('#capanel').css("width", '350px');
                 $('#capanel').css("height", '500px');
@@ -415,79 +415,79 @@ function chattr(){
                 $("#capanel").hide();
                 $('#capanel-toggle').show();
             });
-            
+
             $('#addGroupInput').hide();
             $('.cancelGroup').hide();
-            
+
             showMessages(fb);
-            
+
             showGroup(group);
-            
+
             defaultMessage(fb, group);
-            
+
             addGroupBtn();
-                
+
             $(".cancelGroup").click(function(){
-                
+
                 console.log(".cancelGroup was clicked");
-            
+
                 cancelGroup(group)
-            
+
             });
-            
+
             /*$('.selectGroups').change(function(){
-                
+
                 console.log("clicked .selectGroups");
-                
+
                 cancelGroup(groupCurrent)
-                
+
             });*/
-            
+
             $('.addGroup').click(function(){
-                
+
                 console.log("add group btn clicked, groupCurrent: "+group);
-                
+
                 $(".group").hide();
                 $(".addGroup").hide();
-                
+
                 $('#addGroupInput').show();
-                    
+
                 $('.cancelGroup').show()
-                    
+
                 // check key strokes
                 $("#addGroupInput").keypress(function(e) {
                     if (e.keyCode == 13) { // enter
-                        
+
                         $(".cancelGroup").remove();
                         createGroup(fbGroups);
-                        
+
                     } else if (e.keyCode == 27) { // escape
-                        
+
                         cancelGroup(group)
-                        
+
                     }
-                    
+
                 });
-                
+
                 scroll();
-                
+
             });
-            
+
             scroll();
-            
+
             // show group list
             fbGroups.on('child_added', function(snapshot) {
                 $('<option/>')
                     .attr('id', getMessageId(snapshot))
                     .text(getMessageId(snapshot))
                     .appendTo($('#capanel .selectGroups'));
-                    
+
                 scroll();
-                
+
             });
-            
+
             $('.selectGroups').change(clickGroup);
-            
+
         });
 
         $('head').append('\
@@ -500,7 +500,7 @@ function chattr(){
             #capanel{ /* Main Panel */\
                 font-family:helvetica;\
                 font-size:80%;\
-                position:absolute;\
+                position:fixed;\
                 width:250px; /* static for now */\
                 height:400px;\
                 background:#F6F6F6;\
@@ -509,6 +509,7 @@ function chattr(){
                 padding:0;\
                 box-sizing:border-box;\
                 bottom:10px;\
+                left:10px;\
             }\
             #capanel .top{\
                 padding:5px 0;\

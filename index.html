@@ -12,45 +12,48 @@
             font-weight: 400;
         }
     </style>
-    
+
     <!-- required (all you need!) -->
-    
+
     <script src="chattr.js"></script>
-    
+
     <script>
-        
-        /* 
-        
-        To use a personal firebase database, change the variable 
+
+        /*
+
+        To use a personal firebase database, change the variable
         for example:
             firebaseURL = "https://mydatabase.firebaseio.com/";
-        
+
         Then remove yourURL.
-        
+
         */
-        
+
         yourURL = window.location.hostname.replace('.','-'); // grabs website URL, firebase cannot have periods...
         firebaseURL = "https://chatappcd.firebaseio.com/"+yourURL+"/chat"; // your firebase URL
-    
+
     </script>
-    
+
     <!-- end -->
-    
+
 </head>
 <body>
-    
+
     <h1>Chattr!</h1>
     <p><small>This is an alpha version. Please do not use this in production until it hits beta! Right now, this has been only tested in firefox and moderatly in chrome.</small></p>
-    
+
     <h3>Set up with:</h3>
     <code><pre>
-        
+
         &lt;script src="chattr.js"&gt;&lt;/script&gt;
         &lt;script&gt;
             firebaseURL = "https://mydatabase.firebaseio.com/";
         &lt;/script&gt;
-        
+
     </pre></code>
-    
+
+    Chattr! Bookmarklet: <a href="javascript:(function(){s=document.createElement('script');s.src='https://raw.githubusercontent.com/jplsek/Chattr-CodeDay/master/chattr.js';document.body.appendChild(s);})();">Chattr!</a>
+    <p>Note: The bookmarklet uses github, and I'm not recommend to use it, but you can. This will change on release and use a proper CDN. There is a problem where this bookmarklet will be cached upon first use, and will remain the cached even after this gets updated.</p>
+
 </body>
 </html>
