@@ -1,8 +1,11 @@
 /* Chattr - Made by Jeremy Plsek, Initiated at CodeDay Boston */
 
+/* Code is very messy, I will rewrite eventually */
+
 function makeUI(){
 
-    //firebaseURL = "https://chatappcd.firebaseio.com/"+window.location.hostname+"/chat"; /* default to handle multiple sites */
+    yourURL = window.location.hostname.replace('.','-'); // grabs website URL, firebase cannot have periods...
+    firebaseURL = "https://chatappcd.firebaseio.com/"+yourURL+"/chat"; /* default to handle multiple sites */
     
     injectDependencies();
     
@@ -111,10 +114,14 @@ function chattr(){
 
         // shows the group the the user is in
         function showGroup(group){
+            
+            $('#currentGroup').remove();
+            
+            $(".group").show();
 
-            $('<div class="group"/>')
-                    .text("Current Group: "+group)
-                    .prependTo($('.top'));
+            $('<span id="currentGroup"/>')
+                .text(group)
+                .appendTo($('.group'));
                     
             console.log("show group: "+group);
 
@@ -175,7 +182,7 @@ function chattr(){
                 group = group.replace(' ','_');
                 group = group.replace('.','-');
                 
-                $("#addGroupInput").remove();
+                $("#addGroupInput").hide();
                 
                 fb.off(); // turns off the chat
                 
@@ -184,7 +191,7 @@ function chattr(){
                 fb = new Firebase(firebaseURL+"/groups/"+group);
                 
                 $(".message").remove();
-                $(".group").remove();
+                $(".group").hide();
                 
                 console.log("CreateGroup: "+group);
                 
@@ -210,60 +217,19 @@ function chattr(){
             
         }
         
-        function cancelGroup(groupCurrent){
-            $(".cancelGroup").remove();
-            $("#addGroupInput").remove();
-            showGroup(groupCurrent);
-            addGroupBtn()
+        function cancelGroup(group){
+            $(".cancelGroup").hide();
+            $("#addGroupInput").hide();
+            showGroup(group);
+            addGroupBtn();
+            console.log("cancelGroup: "+group);
         }
         
         // adding the group button to the page
         function addGroupBtn(){
-            $('<button type="button" class="button addGroup" title="add group">Add</button>')
-                .insertAfter($('#capanel .selectGroups'));
-                
-            // activate button
-            $('.addGroup').click(function(){
             
-                var groupCurrent = $(".group").val();
+            $('.addGroup').show();
                 
-                $(".group").remove();
-                $(".addGroup").remove();
-                
-                $('<input type="text" class="input" maxlength="20" id="addGroupInput" placeholder="New Group Name" autofocus/>')
-                    .prependTo($('.top'));
-                    
-                $('<button type="button" class="button cancelGroup" title="cancel group">Cancel</button>')
-                    .insertAfter($('#capanel .selectGroups'));
-                    
-                // check key strokes
-                $("#addGroupInput").keypress(function(e) {
-                    if (e.keyCode == 13) { // enter
-                        
-                        $(".cancelGroup").remove();
-                        createGroup(fbGroups);
-                        
-                    } else if (e.keyCode == 27) { // escape
-                        
-                        cancelGroup(groupCurrent)
-                        
-                    }
-                    
-                });
-                
-                $(".cancelGroup").click(function(){
-                
-                    cancelGroup(groupCurrent)
-                
-                });
-                
-                console.log("add group btn");
-                
-                console.log("groupCurrent: "+groupCurrent);
-                
-                scroll();
-                
-            });
         }
 
         //clicking an existing group
@@ -273,14 +239,12 @@ function chattr(){
             
             console.log("clicking exsisting group: "+$(this).val());
             
-            group = $(this).val();
+            group = $(this).val(); // grabs option text
             
-            //if (typeof(this.selectedIndex) != 'undefined') check(this.selectedIndex)
-                    
             // remove prevous chat and stop previous js
             
             $(".message").remove();
-            $(".group").remove();
+            $(".group").hide();
             
             fb.off(); // turns off the chat
             
@@ -442,6 +406,7 @@ function chattr(){
             });
             $("#capanel #shrink").click(function(){
                 $('#capanel').removeAttr('style')
+                $('#capanel').removeAttr('style')
                 $('#capanel .textbox').removeAttr('style')
                 $("#capanel #enlarge").show();
                 $("#capanel #shrink").hide();
@@ -451,6 +416,9 @@ function chattr(){
                 $('#capanel-toggle').show();
             });
             
+            $('#addGroupInput').hide();
+            $('.cancelGroup').hide();
+            
             showMessages(fb);
             
             showGroup(group);
@@ -458,6 +426,52 @@ function chattr(){
             defaultMessage(fb, group);
             
             addGroupBtn();
+                
+            $(".cancelGroup").click(function(){
+                
+                console.log(".cancelGroup was clicked");
+            
+                cancelGroup(group)
+            
+            });
+            
+            /*$('.selectGroups').change(function(){
+                
+                console.log("clicked .selectGroups");
+                
+                cancelGroup(groupCurrent)
+                
+            });*/
+            
+            $('.addGroup').click(function(){
+                
+                console.log("add group btn clicked, groupCurrent: "+group);
+                
+                $(".group").hide();
+                $(".addGroup").hide();
+                
+                $('#addGroupInput').show();
+                    
+                $('.cancelGroup').show()
+                    
+                // check key strokes
+                $("#addGroupInput").keypress(function(e) {
+                    if (e.keyCode == 13) { // enter
+                        
+                        $(".cancelGroup").remove();
+                        createGroup(fbGroups);
+                        
+                    } else if (e.keyCode == 27) { // escape
+                        
+                        cancelGroup(group)
+                        
+                    }
+                    
+                });
+                
+                scroll();
+                
+            });
             
             scroll();
             
@@ -470,8 +484,9 @@ function chattr(){
                     
                 scroll();
                 
-                $('.selectGroups').change(clickGroup); // clicking .select-group in chrome doesnt work?
             });
+            
+            $('.selectGroups').change(clickGroup);
             
         });
 
@@ -609,6 +624,8 @@ function chattr(){
         $('body').append('\
             <div id="capanel">\
                 <div class="top">\
+                        <div class="group">Current Group: </div>\
+                        <input type="text" class="input" maxlength="20" id="addGroupInput" placeholder="New Group Name"/>\
                         <button type="button" id="enlarge" class="button" title="enlarge">++</button>\
                         <button type="button" id="shrink" class="button" title="shrink">--</button>\
                     <button type="button" id="close" class="button" title="close">X</button>\
@@ -617,6 +634,8 @@ function chattr(){
                     <select class="button selectGroups">\
                         <option style="display:none"></option>\
                     </select>\
+                    <button type="button" class="button addGroup" title="add group">Add</button>\
+                    <button type="button" class="button cancelGroup" title="cancel group">Cancel</button>\
                     <br/>Users:\
                     <select class="button selectUsers">\
                         <option style="display:none"></option>\
@@ -626,10 +645,11 @@ function chattr(){
                 <div class="textbox"></div>\
                 <div class="bottom">\
                     <form>\
-                        <input id="capanel-name" onClick="this.select();" type="text" class="input" placeholder="Name" maxlength="20"/>\
+                        <input id="capanel-name" type="text" class="input" placeholder="Name" maxlength="20"/>\
                         <input type="text" id="capanel-text" class="textarea" placeholder="Message" maxlength="1024"></textarea>\
                         \
-                        <input style="background: rgb(212, 212, 212);color: rgb(148, 152, 161);" class="button" type="button" name="file" value="Upload..." readonly/>\
+                        <input type="file" id="fileSelect" style="display:none;"/>\
+                        <input class="button" type="button" name="file" value="Upload..." style="background:rgba(195, 195, 195, 1);" onclick="document.getElementById(\'fileSelect\').click();" readonly/>\
                         <input id="capanel-submit" class="button" type="button" value="Send"/>\
                     </form>\
                 </div>\

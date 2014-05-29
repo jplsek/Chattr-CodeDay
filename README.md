@@ -13,15 +13,21 @@ All that needs to be done is to include the script into your website and your go
 
 * There are a lot of bugs right now, as most of the features were rushed together in the last few hours of CodeDay.
 
-* Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups, some things while using webkit browsers don't work (changing groups), current group function doesn't work after cancelling "create a group" (fix later: check group by looking at firebase, not manually), adding spaces to groups names mess up group lists.
+* Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups/ just doesnt work how it should, "add > add group > add > cancel button doesnt pop up"
 
 ### Features that NEED to be added
 
-* Upload files (click button to show pane of text when a file is uploaded?)
+1. Upload files (click button to show pane of text when a file is uploaded?)
 
-* Passworded groups
+2. Fix user lists....
 
-* Removal of groups
+3. Add total concurrent users
+
+4. Add removal of groups (admin users?)
+
+5. Passworded groups
+
+6. Beta?
 
 * Fix bugs / warnings
 
