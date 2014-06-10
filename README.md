@@ -13,7 +13,7 @@ All that needs to be done is to include the script into your website and your go
 
 * There are a lot of bugs right now, as most of the features were rushed together in the last few hours of CodeDay.
 
-* Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups/ just doesn't work how it should, "add > add group > add > cancel button doesn't pop up"
+* Bugs: Users sometimes don't get removed when disconnecting, user list gets messy when changing groups/ just doesn't work how it should.
 
 ### Features that NEED to be added
 
@@ -28,6 +28,8 @@ All that needs to be done is to include the script into your website and your go
 5. Passworded groups
 
 6. Beta?
+
+7. When user says something twice, do something similar to facebook?
 
 * Fix bugs / warnings
 

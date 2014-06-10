@@ -4,7 +4,7 @@
 
 function makeUI(){
 
-    yourURL = window.location.hostname.replace('.','-'); // grabs website URL, firebase cannot have periods...
+    yourURL = window.location.hostname.replace(/\./g,'-'); // grabs website URL, firebase cannot have periods...
     firebaseURL = "https://chatappcd.firebaseio.com/"+yourURL+"/chat"; /* default to handle multiple sites */
 
     injectDependencies();
@@ -61,16 +61,21 @@ function chattr(){
         // date style
         function newDate(){
 
-            var date    = new Date();
+            var date   = new Date();
+            var years   = date.getFullYear();
+            var months  = date.getMonth();
+            var days    = date.getDay();
             var hours   = date.getHours();
             var minutes = date.getMinutes();
             var seconds = date.getSeconds();
 
+            months  = months  < 10 ? "0"+months  : ""+months;
+            days    = days    < 10 ? "0"+days    : ""+days;
             hours   = hours   < 10 ? "0"+hours   : ""+hours;
             minutes = minutes < 10 ? "0"+minutes : ""+minutes;
             seconds = seconds < 10 ? "0"+seconds : ""+seconds;
 
-            return time = hours+":"+minutes+":"+seconds;
+            return time = months+"/"+days+" - "+hours+":"+minutes;
 
         }
 
@@ -89,12 +94,14 @@ function chattr(){
 
             fb.limit(50).on('child_added', function(snapshot) {
                 var message = snapshot.val();
-                $('<div class="message"/>')
+                $('<li/>')
                     .attr('id', getMessageId(snapshot))
                     .append($('<div class="user"/>')
-                    .text(message.name))
+                    .text(message.name)
+                    .attr('title', message.name))
                     .append($('<div class="time"/>')
-                    .text(message.time))
+                    .text(message.time)
+                    .attr('title', message.time))
                     .append($('<div class="out"/>')
                     .text(message.text))
                     .appendTo($('#capanel .textbox'));
@@ -173,16 +180,18 @@ function chattr(){
         // create group from button
         function createGroup(fbGropus){
 
+        console.log("creating group?");
+
             if ($('#addGroupInput').val() == ''){
                 // do nothing
             } else {
 
                 group = $('#addGroupInput').val();
 
-                group = group.replace(' ','_');
-                group = group.replace('.','-');
+                group = group.replace(/\ /g,'_');
+                group = group.replace(/\./g,'-');
 
-                $("#addGroupInput").hide();
+                hideAddGroupInput();
 
                 fb.off(); // turns off the chat
 
@@ -190,10 +199,11 @@ function chattr(){
 
                 fb = new Firebase(firebaseURL+"/groups/"+group);
 
-                $(".message").remove();
-                $(".group").hide();
+                $(".textbox li").remove();
 
-                console.log("CreateGroup: "+group);
+                hideGroup();
+
+                console.log("Created a Group: "+group);
 
                 showGroup(group);
 
@@ -201,35 +211,50 @@ function chattr(){
 
                 //console.log(fb);
 
-                showMessages(fb)
+                showMessages(fb);
 
                 defaultMessage(fb, group);
 
-                addGroupBtn()
-
-                scroll();
+                showAddBtn();
 
             }
-
-            console.log("create group...");
 
             scroll();
 
         }
 
         function cancelGroup(group){
-            $(".cancelGroup").hide();
-            $("#addGroupInput").hide();
-            showGroup(group);
-            addGroupBtn();
+            hideCancelBtn();
+            hideAddGroupInput();
             console.log("cancelGroup: "+group);
+            showGroup(group);
+            showAddBtn();
         }
 
-        // adding the group button to the page
-        function addGroupBtn(){
-
+        // show and hide buttons on the page
+        function showAddBtn(){
+            console.log('showAddBtn');
             $('.addGroup').show();
-
+        }
+        function showCancelBtn(){
+            console.log('showCancelBtn');
+            $('.cancelGroup').show();
+        }
+        function hideAddBtn(){
+            console.log('hideAddBtn');
+            $(".addGroup").hide();
+        }
+        function hideCancelBtn(){
+            console.log('hideCancelBtn');
+            $(".cancelGroup").hide();
+        }
+        function hideAddGroupInput(){
+            console.log('hideAddGroupInput');
+            $("#addGroupInput").hide();
+        }
+        function hideGroup(){
+            console.log('hideGroup');
+            $(".group").hide();
         }
 
         //clicking an existing group
@@ -243,8 +268,8 @@ function chattr(){
 
             // remove prevous chat and stop previous js
 
-            $(".message").remove();
-            $(".group").hide();
+            $(".textbox li").remove();
+            hideGroup();
 
             fb.off(); // turns off the chat
 
@@ -272,7 +297,6 @@ function chattr(){
                     .attr('id', getMessageId(snapshot))
                     .text(message.name)
                     .appendTo($('#capanel .selectUsers'));
-
 
             });
         }
@@ -325,23 +349,22 @@ function chattr(){
 
             if ($('#capanel-name').val() == ''){
                 username = 'Anonymous';
+                console.log("set anon name..");
                 //$('#capanel-name').val('Anonymous')
             } else {
-                var username = $('#capanel-name').val();
+                username = $('#capanel-name').val();
+                console.log("use last name..");
             }
 
-
-
             fbUsers = new Firebase(firebaseURL+"/users/");
-
 
             fbUsers.push({name:username});
 
             // retrieve the last record
             fbUsers.endAt().limit(1).on('child_added', lastUser);
 
-            // Gets the user
-            setTimeout(function(){
+            // Gets the user, has to wait until deleteOne gets set
+            setTimeout(function(snapshot){
 
                 console.log(fbUser.toString());
 
@@ -359,23 +382,24 @@ function chattr(){
 
 
             fbUsers.on('child_changed', function(snapshot) {
-              var message = snapshot.val();
-              var fbUserChanged = $('.selectUsers').children('#' + getMessageId(snapshot));
-              if (fbUserChanged) {
-                fbUserChanged
-                    .attr('id', getMessageId(snapshot))
-                    .text(message.name)
-                    .appendTo($('#capanel .selectUsers'));
-              }
+                var message = snapshot.val(); // recieves the message sent to the database
+                var fbUserChanged = $('.selectUsers').children('#' + getMessageId(snapshot));
+                if (fbUserChanged) {
+                    console.log("someone changed their name... :"+toString(message)+":");
+                    fbUserChanged
+                        .attr('id', getMessageId(snapshot))
+                        .text(message.name) // grabs the name from the message
+                        .appendTo($('#capanel .selectUsers'));
+                }
             });
 
             fbUsers.on('child_removed', function(snapshot) {
-                  var fbUserRemoved = $('.selectUsers').children('#' + getMessageId(snapshot));
-                  if (fbUserRemoved) {
-                        fbUserRemoved.remove();
-                  }
+                var fbUserRemoved = $('.selectUsers').children('#' + getMessageId(snapshot));
+                if (fbUserRemoved) {
+                    console.log("someone left chattr...");
+                    fbUserRemoved.remove();
+                }
             });
-
 
             var group = 'default';
             fb = new Firebase(firebaseURL+"/groups/"+group);
@@ -385,16 +409,11 @@ function chattr(){
             // checks when the user presses enter in the text box
             $("#capanel-text").keypress(function(e) {
                 if (e.keyCode == 13) {
-
                     send(fb)
-
                 }
             });
-
             $("#capanel-submit").click(function() {
-
                 send(fb)
-
             });
 
             $("#capanel #enlarge").click(function(){
@@ -404,6 +423,11 @@ function chattr(){
                 $("#capanel #enlarge").hide();
                 $("#capanel #shrink").show();
             });
+            /*$("#capanel #full").click(function(){
+                $('#capanel').css("width", 'calc(100% - 20px)');
+                $('#capanel').css("height", 'calc(100% - 20px)');
+                $('#capanel .textbox').css("height", '60%');
+            });*/
             $("#capanel #shrink").click(function(){
                 $('#capanel').removeAttr('style')
                 $('#capanel').removeAttr('style')
@@ -425,45 +449,37 @@ function chattr(){
 
             defaultMessage(fb, group);
 
-            addGroupBtn();
+            showAddBtn();
 
             $(".cancelGroup").click(function(){
 
                 console.log(".cancelGroup was clicked");
 
-                cancelGroup(group)
+                cancelGroup(group);
 
             });
-
-            /*$('.selectGroups').change(function(){
-
-                console.log("clicked .selectGroups");
-
-                cancelGroup(groupCurrent)
-
-            });*/
 
             $('.addGroup').click(function(){
 
                 console.log("add group btn clicked, groupCurrent: "+group);
 
-                $(".group").hide();
-                $(".addGroup").hide();
+                hideGroup();
+                hideAddBtn();
 
                 $('#addGroupInput').show();
 
-                $('.cancelGroup').show()
+                showCancelBtn();
 
                 // check key strokes
                 $("#addGroupInput").keypress(function(e) {
                     if (e.keyCode == 13) { // enter
 
-                        $(".cancelGroup").remove();
+                        hideCancelBtn();
                         createGroup(fbGroups);
 
                     } else if (e.keyCode == 27) { // escape
 
-                        cancelGroup(group)
+                        cancelGroup(group);
 
                     }
 
@@ -499,7 +515,7 @@ function chattr(){
             }\
             #capanel{ /* Main Panel */\
                 font-family:helvetica;\
-                font-size:80%;\
+                font-size:12px;\
                 position:fixed;\
                 width:250px; /* static for now */\
                 height:400px;\
@@ -510,6 +526,7 @@ function chattr(){
                 box-sizing:border-box;\
                 bottom:10px;\
                 left:10px;\
+                z-index:100;\
             }\
             #capanel .top{\
                 padding:5px 0;\
@@ -556,11 +573,11 @@ function chattr(){
                 border-right: transparent;\
                 padding:3px 5px;\
             }\
-            #capanel .message{\
+            #capanel .textbox li{\
                 border-bottom:1px solid #DBDBDB;\
                 padding:3px 5px;\
             }\
-            #capanel .message:nth-child(even){\
+            #capanel .textbox li:nth-child(even){\
                 background:#FCFCFC;\
             }\
             #capanel .user{\
@@ -601,7 +618,7 @@ function chattr(){
                 clear:both;\
             }\
             #capanel .group{\
-                margin-bottom:8px;\
+                margin-bottom:9px;\
                 font-weight:bold;\
                 float:left;\
             }\
@@ -627,8 +644,8 @@ function chattr(){
                 <div class="top">\
                         <div class="group">Current Group: </div>\
                         <input type="text" class="input" maxlength="20" id="addGroupInput" placeholder="New Group Name"/>\
-                        <button type="button" id="enlarge" class="button" title="enlarge">++</button>\
-                        <button type="button" id="shrink" class="button" title="shrink">--</button>\
+                        <button type="button" id="enlarge" class="button" title="enlarge">[+]</button>\
+                        <button type="button" id="shrink" class="button" title="shrink">[-]</button>\
                     <button type="button" id="close" class="button" title="close">X</button>\
                     <div class="drops">\
                     Groups:\
