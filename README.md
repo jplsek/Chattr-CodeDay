@@ -27,9 +27,13 @@ All that needs to be done is to include the script into your website and your go
 
 5. Passworded groups
 
-6. Beta?
+6. Fix Autolinks (kind of implemented)
 
-7. When user says something twice, do something similar to facebook?
+7. Fix "Current Group" after clicking the cancel button while in a different group
+
+8. Beta?
+
+9. When user says something twice, do something similar to facebook?
 
 * Fix bugs / warnings
 

@@ -54,6 +54,7 @@ function chattr(){
             $('#capanel-toggle').click(function(){
                 $('#capanel').toggle();
                 $('#capanel-toggle').toggle();
+                scroll();
             });
 
         });
@@ -89,23 +90,76 @@ function chattr(){
           return snapshot.name();
         }
 
-        // enables the messages taken from the database (shows reusively by the on() function)
+        // shows the messages taken from the database (shows reusively by the on() function)
         function showMessages(fb){
 
             fb.limit(50).on('child_added', function(snapshot) {
+            
                 var message = snapshot.val();
-                $('<li/>')
-                    .attr('id', getMessageId(snapshot))
-                    .append($('<div class="user"/>')
-                    .text(message.name)
-                    .attr('title', message.name))
-                    .append($('<div class="time"/>')
-                    .text(message.time)
-                    .attr('title', message.time))
-                    .append($('<div class="out"/>')
-                    .text(message.text))
-                    .appendTo($('#capanel .textbox'));
-
+                
+                console.log
+                
+                if (message.name == "changedName"){ // changed user names
+                
+                    $('<li class="nameChange"/>')
+                        .attr('id', getMessageId(snapshot))
+                        .append($('<div class="out"/>')
+                        .text(message.text))
+                        .appendTo($('#capanel .textbox'));
+                
+                } else if (message.name == "Chattr!"){ // initial lobbies
+                
+                    $('<li class="groupTitle"/>')
+                        .attr('id', getMessageId(snapshot))
+                        .append($('<div class="out"/>')
+                        .text(message.text))
+                        .appendTo($('#capanel .textbox'));
+                        
+                } else if (message.name == "userLeft"){ // when a user leaves
+                
+                    $('<li class="userLeave"/>')
+                        .attr('id', getMessageId(snapshot))
+                        .append($('<div class="out"/>')
+                        .text(message.text))
+                        .appendTo($('#capanel .textbox'));
+                
+                } else if (message.name == "userJoin"){ // when a user leaves
+                
+                    $('<li class="userJoined"/>')
+                        .attr('id', getMessageId(snapshot))
+                        .append($('<div class="out"/>')
+                        .text(message.text))
+                        .appendTo($('#capanel .textbox'));
+                
+                } else { // everything else
+                
+                    /* if text contains http convert into an anchor _blank */
+                    
+                    var text = message.text;
+                    
+                    // supposed to create links...
+                    var text = text.replace(/(>|<a[^<>]+href=['"])?(https?:\/\/([-a-z0-9]+\.)+[a-z]{2,5}(\/[-a-z0-9!#()\/?&.,]*[^ !#?().,])?)/gi, function($0, $1, $2) {
+                            return ($1 ? $0 : '<a href="' + $2 + '" target="_blank">' + $2 + '</a>');
+                        });
+                    // convert protocol-less URLs into links
+                    var text = message.text.replace(/(:\/\/|>)?\b(([-a-z0-9]+\.)+[a-z]{2,5}(\/[-a-z0-9!#()\/?&.]*[^ !#?().,])?)/gi, function($0, $1, $2) {
+                            return ($1 ? $0 : '<a href="http://' + $2 + '">' + $2 + '</a>');
+                        });
+                
+                    $('<li/>')
+                        .attr('id', getMessageId(snapshot))
+                        .append($('<div class="user"/>')
+                        .text(message.name)
+                        .attr('title', message.name))
+                        .append($('<div class="time"/>')
+                        .text(message.time)
+                        .attr('title', message.time))
+                        .append($('<div class="out"/>')
+                        .text(text))
+                        .appendTo($('#capanel .textbox'));
+                        
+                }
+                
                 scroll();
 
             });
@@ -150,26 +204,35 @@ function chattr(){
 
         // sends the message the user wrote
         function send(fb){
-
-            // updates the username
-            if ($('#capanel-name').val() != fbUserName){
-                fbUser.update({name:$('#capanel-name').val()});
+        
+            var nameField = $('#capanel-name').val(); // gets the name from the input
+            
+            if (nameField == ''){ // checks if it's empty
+                $('#capanel-name').val('Anonymous');
+            }
+            
+            if (nameField != fbUserName){ // updates the database for the userlist
+            
+                console.log("send() updated username: "+fbUserName+" to: "+nameField);
+                var nameChangeMsg = fbUserName+" changed their name to "+nameField;
+                
+                /*$('<li class="nameChange"/>')
+                    .text(nameChangeMsg)
+                    .appendTo($('#capanel .textbox'));*/
+                
+                fbUser.update({name:nameField});
+                
+                fb.push({name:"changedName", text:nameChangeMsg, time:newDate()}); // sends message about a name change
+                
                 fbUsers.off
                 $('.select-user').remove();
                 listUsers();
             }
-            if ($('#capanel-name').val() == ''){
-                $('#capanel-name').val('Anonymous');
-            }
-            if ($('#capanel-text').val() == ''){
-                // do nothing
-            } else {
-                var name = $('#capanel-name').val();
-                var text = $('#capanel-text').val();
-                newDate();
-                fb.push({name:name, text:text, time:time});
-                $('#capanel-text').val('');
-            }
+            
+            var text = $('#capanel-text').val();
+            
+            fb.push({name:fbUserName, text:text, time:newDate()});
+            $('#capanel-text').val('');
 
             console.log("Sending message...");
 
@@ -269,7 +332,11 @@ function chattr(){
             // remove prevous chat and stop previous js
 
             $(".textbox li").remove();
+            
             hideGroup();
+            showAddBtn(); // (hides incase the user clicks "add" then decides to join a group before clicking "cancel"
+            hideAddGroupInput();
+            hideCancelBtn();
 
             fb.off(); // turns off the chat
 
@@ -292,6 +359,7 @@ function chattr(){
 
         function listUsers(){
             fbUsers.on('child_added', function(snapshot) {
+                console.log("listUsers()");
                 var message = snapshot.val();
                 $('<option class="select-user"/>')
                     .attr('id', getMessageId(snapshot))
@@ -342,18 +410,23 @@ function chattr(){
         }
 
         $(document).ready(function() {
+        
+            var nameField = $('#capanel-name').val();
 
             console.log("Using url: "+firebaseURL);
 
             fbGroups = new Firebase(firebaseURL+"/groups");
+            
+            var group = 'default';
+            fb = new Firebase(firebaseURL+"/groups/"+group);
 
-            if ($('#capanel-name').val() == ''){
+            if (nameField == ''){
                 username = 'Anonymous';
                 console.log("set anon name..");
-                //$('#capanel-name').val('Anonymous')
+                $('#capanel-name').val('Anonymous');
             } else {
-                username = $('#capanel-name').val();
-                console.log("use last name..");
+                username = nameField;
+                console.log("use last cached name..");
             }
 
             fbUsers = new Firebase(firebaseURL+"/users/");
@@ -363,46 +436,33 @@ function chattr(){
             // retrieve the last record
             fbUsers.endAt().limit(1).on('child_added', lastUser);
 
-            // Gets the user, has to wait until deleteOne gets set
+            // Gets the user, has to wait until deleteOne gets set (lastUser)
             setTimeout(function(snapshot){
 
-                console.log(fbUser.toString());
+                console.log("fbUser: "+fbUser.toString());
 
                 fbUser.on('value', function(snapshot) {
 
                     fbUserName = snapshot.val().name;
+                    console.log("setTimeOut: fbUserName is: "+fbUserName);
 
                     listUsers();
+                    
 
                 });
 
+                fb.push({name:"userJoin", text:fbUserName+" joined the chat", time:newDate()});
+
                 scroll();
 
-            }, 2500);
-
-
-            fbUsers.on('child_changed', function(snapshot) {
-                var message = snapshot.val(); // recieves the message sent to the database
-                var fbUserChanged = $('.selectUsers').children('#' + getMessageId(snapshot));
-                if (fbUserChanged) {
-                    console.log("someone changed their name... :"+toString(message)+":");
-                    fbUserChanged
-                        .attr('id', getMessageId(snapshot))
-                        .text(message.name) // grabs the name from the message
-                        .appendTo($('#capanel .selectUsers'));
-                }
-            });
+            }, 2000);
 
             fbUsers.on('child_removed', function(snapshot) {
                 var fbUserRemoved = $('.selectUsers').children('#' + getMessageId(snapshot));
-                if (fbUserRemoved) {
-                    console.log("someone left chattr...");
-                    fbUserRemoved.remove();
-                }
+                console.log(fbUserName+" left chattr...");
+                fb.push({name:"userLeft", text:fbUserName+" left the chat", time:newDate()});
+                fbUserRemoved.remove();
             });
-
-            var group = 'default';
-            fb = new Firebase(firebaseURL+"/groups/"+group);
 
             //console.log(fb);
 
@@ -576,6 +636,7 @@ function chattr(){
             #capanel .textbox li{\
                 border-bottom:1px solid #DBDBDB;\
                 padding:3px 5px;\
+                list-style:none;\
             }\
             #capanel .textbox li:nth-child(even){\
                 background:#FCFCFC;\
@@ -635,6 +696,22 @@ function chattr(){
                 position: absolute;\
                 right: 25px;\
                 top: 0;\
+            }\
+            #capanel .nameChange .out{\
+                font-size: 10px;\
+                color: rgba(15, 146, 15, 1);\
+            }\
+            #capanel .groupTitle .out{\
+                color: rgba(15, 146, 15, 1);\
+                font-weight: bold;\
+            }\
+            #capanel .userLeave .out{\
+                color: rgba(146, 103, 15, 1);\
+                font-size: 10px;\
+            }\
+            #capanel .userJoined .out{\
+                color: rgba(0, 111, 255, 1);\
+                font-size: 10px;\
             }\
             </style>\
         ');
