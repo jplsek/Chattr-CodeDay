@@ -1,22 +1,23 @@
 
 // date style
-function newDate(){
+function newDate(time){
 
-    var date   = new Date();
+    var date = new Date(time);
     var years   = date.getFullYear();
-    var months  = date.getMonth();
-    var days    = date.getDay();
+    var months  = date.getMonth() + 1;
+    var days    = date.getDate();
     var hours   = date.getHours();
     var minutes = date.getMinutes();
     var seconds = date.getSeconds();
 
-    months  = months  < 10 ? "0"+months  : ""+months;
-    days    = days    < 10 ? "0"+days    : ""+days;
-    hours   = hours   < 10 ? "0"+hours   : ""+hours;
-    minutes = minutes < 10 ? "0"+minutes : ""+minutes;
-    seconds = seconds < 10 ? "0"+seconds : ""+seconds;
+    // adds 0 in front of < 10 numbers.
+    months  = months  < 10 ? "0" + months  : "" + months;
+    days    = days    < 10 ? "0" + days    : "" + days;
+    hours   = hours   < 10 ? "0" + hours   : "" + hours;
+    minutes = minutes < 10 ? "0" + minutes : "" + minutes;
+    seconds = seconds < 10 ? "0" + seconds : "" + seconds;
 
-    return time = months+"/"+days+" - "+hours+":"+minutes;
+    return time = months + "/" + days + " - " + hours + ":" + minutes;
 }
 
 // get the nicer unique ID
@@ -67,29 +68,17 @@ function showMessages(fb){
                 .appendTo($('#capanel .textbox'));
         
         } else { // everything else
-        
-            /* if text contains http convert into an anchor _blank */
             
-            //var text = message.text;
-            
-            // supposed to create links...
-            /*var text = text.replace(/(>|<a[^<>]+href=['"])?(https?:\/\/([-a-z0-9]+\.)+[a-z]{2,5}(\/[-a-z0-9!#()\/?&.,]*[^ !#?().,])?)/gi, function($0, $1, $2){
-                return ($1 ? $0 : '<a href="' + $2 + '" target="_blank">' + $2 + '</a>');
-            });
-            // convert protocol-less URLs into links
-            var text = message.text.replace(/(:\/\/|>)?\b(([-a-z0-9]+\.)+[a-z]{2,5}(\/[-a-z0-9!#()\/?&.]*[^ !#?().,])?)/gi, function($0, $1, $2){
-                return ($1 ? $0 : '<a href="http://' + $2 + '">' + $2 + '</a>');
-            });*/
-            
+            var time = newDate(message.time);
             var html = Autolinker.link(message.text);
-        
+            
             $('<li/>')
                 .attr('id', getMessageId(snapshot))
                 .append($('<div class="user"/>')
                     .text(message.name)
                     .attr('title', message.name))
                 .append($('<div class="time"/>')
-                    .text(message.time)
+                    .text(time)
                     .attr('title', message.time))
                 .append($('<div class="out"/>')
                     .html(html))
@@ -130,7 +119,7 @@ function send(fb){
         
         fbUser.update({name:nameField});
         
-        fb.push({ name : "changedName", text : nameChangeMsg, time : newDate() }); // sends message about a name change
+        fb.push({ name : "changedName", text : nameChangeMsg, time : Date.now() }); // sends message about a name change
         
         fbUsers.off();
         $('.select-user').remove();
@@ -139,7 +128,7 @@ function send(fb){
     
     var text = $('#capanel-text').val();
     
-    fb.push({name:fbUserName, text:text, time:newDate()});
+    fb.push({name:fbUserName, text:text, time: Date.now() });
     $('#capanel-text').val('');
 
     console.log("Sending message...");
