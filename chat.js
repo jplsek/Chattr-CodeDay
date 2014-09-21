@@ -68,9 +68,9 @@ function showMessages(fb){
                 .appendTo($('#capanel .textbox'));
         
         } else { // everything else
-        
+            
             var time = newDate(message.time);
-            var text = Autolinker.link(message.text);
+            var html = Autolinker.link(message.text);
             
             $('<li/>')
                 .attr('id', getMessageId(snapshot))
@@ -81,8 +81,8 @@ function showMessages(fb){
                     .text(time)
                     .attr('title', message.time))
                 .append($('<div class="out"/>')
-                    .html(text))
-                    .appendTo($('#capanel .textbox'));
+                    .html(html))
+                .appendTo($('#capanel .textbox'));
         }
         
         scroll();
