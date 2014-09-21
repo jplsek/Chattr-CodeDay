@@ -2,7 +2,7 @@
 // date style
 function newDate(time){
 
-    var date = new Date(time);
+    var date    = new Date(time);
     var years   = date.getFullYear();
     var months  = date.getMonth() + 1;
     var days    = date.getDate();
