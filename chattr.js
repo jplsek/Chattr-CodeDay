@@ -6,8 +6,8 @@ function loadDependency(src, callback){
     var jqElement = document.createElement('script');
     jqElement.src = src;
     jqElement.async = true;
-    jqElement.onreadystatechange = s.onload = (function(){
-        var state = s.readyState;
+    jqElement.onreadystatechange = jqElement.onload = (function(){
+        var state = jqElement.readyState;
         if(!callback.done && (!state || /loaded|complete/.test(state))){
             callback.done = true;
             callback();
@@ -722,11 +722,13 @@ void dependCallback(){
 }
 
 // Main entry point (nothing runs before this!)
-$(document).ready(function(){
+function entry(){
     // grabs website URL, firebase cannot have periods...
-    yourURL = window.location.hostname.replace(/\./g,'-'); 
+    yourURL = window.location.hostname.replace(/\./g,'-');
     // default to handle multiple sites
     firebaseURL = "https://chatappcd.firebaseio.com/" + yourURL + "/chat";
     
     injectDependencies();
-});
+}
+
+entry();
