@@ -27,7 +27,7 @@ All that needs to be done is to include the script into your website and your go
 
 * Passworded groups?
 
-* Fix "Current Group" after clicking the cancel button while in a different group
+* Remember last username used
 
 * Remove firebase dependency, load stuf using ajax and from a database
 
