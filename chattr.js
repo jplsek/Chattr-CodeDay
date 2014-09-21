@@ -6,27 +6,28 @@ function loadDependency(src, callback){
     var jqElement = document.createElement('script');
     jqElement.src = src;
     jqElement.async = true;
-    jqElement.onreadystatechange = jqElement.onload = (function(){
+    jqElement.onreadystatechange = jqElement.onload = function(){
+        console.log("script loaded");
         var state = jqElement.readyState;
         if(!callback.done && (!state || /loaded|complete/.test(state))){
             callback.done = true;
             callback();
         }
-    });
+    };
     document.getElementsByTagName("head")[0].appendChild(jqElement);
 }
 
 function loadFirebase(){
     // Add Firebase
     console.log('loadFirebase: loading firebase');
-    loadDependency("//cdn.firebase.com/js/client/1.0.15/firebase.js", dependCallback);
+    loadDependency("https://cdn.firebase.com/js/client/1.0.15/firebase.js", dependCallback);
 }
 
 function injectDependencies(){
     // Add jQuery
     if(!("$" in window)){ // Is jquery incuded?
         console.log('injectDependencies: loading jquery');
-        loadDependency("//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", loadFirebase);
+        loadDependency("https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", loadFirebase);
     } else {
         console.log('injectDependencies: loading firebase');
         loadFirebase();
@@ -35,11 +36,8 @@ function injectDependencies(){
 
 function loadChattr(){
     // 1 ////////////////////////////////////////////////////////////////////////////////////////
-    $('body').append('\
-        <div class="button chat-button" id="capanel-toggle">\
-            + Chat\
-        </div>\
-    ');
+    // 4 ////////////////////////////////////////////////////////////////////////////////////////
+    loadPanel();
     
     // 2 ////////////////////////////////////////////////////////////////////////////////////////
     $("#shrink").hide();
@@ -61,7 +59,7 @@ function loadChattr(){
     var group = 'default';
     fb = new Firebase(firebaseURL + "/groups/" + group);
 
-    if (nameField == ''){
+    if (nameField === '' || nameField === undefined){
         username = 'Anonymous';
         console.log("set anon name..");
         $('#capanel-name').val('Anonymous');
@@ -72,7 +70,7 @@ function loadChattr(){
 
     fbUsers = new Firebase(firebaseURL+"/users/");
 
-    fbUsers.push({name:username});
+    fbUsers.push({ name : username });
 
     // retrieve the last record
     fbUsers.endAt().limit(1).on('child_added', lastUser);
@@ -86,7 +84,7 @@ function loadChattr(){
             console.log("setTimeOut: fbUserName is: "+fbUserName);
             listUsers();
         });
-        fb.push({name:"userJoin", text:fbUserName+" joined the chat", time:newDate()});
+        fb.push({ name : "userJoin", text : fbUserName + " joined the chat", time : newDate()});
 
         scroll();
     }, 2000);
@@ -94,7 +92,7 @@ function loadChattr(){
     fbUsers.on('child_removed', function(snapshot) {
         var fbUserRemoved = $('.selectUsers').children('#' + getMessageId(snapshot));
         console.log(fbUserName+" left chattr...");
-        fb.push({name:"userLeft", text:fbUserName+" left the chat", time:newDate()});
+        fb.push({ name : "userLeft", text : fbUserName+" left the chat", time : newDate() });
         fbUserRemoved.remove();
     });
 
@@ -188,8 +186,9 @@ function loadChattr(){
     });
 
     $('.selectGroups').change(clickGroup);
-    
-    // 4 ////////////////////////////////////////////////////////////////////////////////////////
+}
+
+function loadPanel(){
     $('head').append('\
     <style>\
         /* Chattr Stylesheet */\
@@ -339,7 +338,7 @@ function loadChattr(){
         }\
         </style>\
     ');
-
+    
     $('body').append('\
         <div id="capanel">\
             <div class="top">\
@@ -375,6 +374,12 @@ function loadChattr(){
         </div> <!-- #capanel -->\
     ');
 
+    $('body').append('\
+        <div class="button chat-button" id="capanel-toggle">\
+            + Chat\
+        </div>\
+    ');
+    
     scroll();
 }
 
@@ -706,9 +711,9 @@ function lastUser(snapshot){
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Called when dependencies finished loading
-//void dependCallback(){
-//    loadChattr();
-//}
+function dependCallback(){
+    loadChattr();
+}
 
 // Main entry point (nothing runs before this!)
 function entry(){
