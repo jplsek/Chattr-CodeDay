@@ -86,14 +86,14 @@ function showMessages(fb){
             $('<li/>')
                 .attr('id', getMessageId(snapshot))
                 .append($('<div class="user"/>')
-                .text(message.name)
-                .attr('title', message.name))
+                    .text(message.name)
+                    .attr('title', message.name))
                 .append($('<div class="time"/>')
-                .text(message.time)
-                .attr('title', message.time))
+                    .text(message.time)
+                    .attr('title', message.time))
                 .append($('<div class="out"/>')
-                .text(text))
-                .appendTo($('#capanel .textbox'));
+                    .html(text))
+                    .appendTo($('#capanel .textbox'));
         }
         
         scroll();

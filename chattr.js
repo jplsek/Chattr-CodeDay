@@ -35,7 +35,6 @@ function injectDependencies(){
         console.log('injectDependencies: loading jquery');
         loadDependency("https://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", loadFirebase);
     } else {
-        console.log('injectDependencies: loading firebase');
         loadFirebase();
     }
 }
