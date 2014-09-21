@@ -18,16 +18,17 @@ function loadDependency(src, callback){
 
 function loadFirebase(){
     // Add Firebase
-    console.log('loading fb');
+    console.log('loadFirebase: loading firebase');
     loadDependency("//cdn.firebase.com/js/client/1.0.15/firebase.js", dependCallback);
 }
 
 function injectDependencies(){
     // Add jQuery
     if(!("$" in window)){ // Is jquery incuded?
-        console.log('loading jquery');
+        console.log('injectDependencies: loading jquery');
         loadDependency("//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", loadFirebase);
     } else {
+        console.log('injectDependencies: loading firebase');
         loadFirebase();
     }
 }
@@ -705,9 +706,9 @@ function lastUser(snapshot){
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 // Called when dependencies finished loading
-void dependCallback(){
-    loadChattr();
-}
+//void dependCallback(){
+//    loadChattr();
+//}
 
 // Main entry point (nothing runs before this!)
 function entry(){
