@@ -1,4 +1,4 @@
-/* Chattr - Made by Jeremy Plsek, Initiated at CodeDay Boston */
+/* Chattr - Made by Jeremy Plsek. Contribution by Charlie and Ethan. Initiated at CodeDay Boston */
 
 var cnt = 0; // wut ??
 
@@ -18,11 +18,14 @@ function loadDependency(src, callback){
 
 function loadFirebase(){
     // Add Firebase
+    console.log('loading fb');
     loadDependency("//cdn.firebase.com/js/client/1.0.15/firebase.js", dependCallback);
 }
+
 function injectDependencies(){
     // Add jQuery
     if(!("$" in window)){ // Is jquery incuded?
+        console.log('loading jquery');
         loadDependency("//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", loadFirebase);
     }
 }
@@ -693,23 +696,6 @@ function lastUser(snapshot){
         }
     }, 1500);
 }
-
-/*
-function chattr(){
-    $(document).ready(function(){
-        // 1
-    });
-    $(document).ready(function(){
-        $(document).ready(function(){
-            // 3
-        });
-        // 2
-        $(document).ready(function(){
-            // 4
-        });
-    });
-}
-*/
 
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
