@@ -17,46 +17,40 @@ All that needs to be done is to include the script into your website and your go
 
 ### Features that NEED to be added
 
-1. Upload files (click button to show pane of text when a file is uploaded?)
+* Upload files (click button to show pane of text when a file is uploaded?)
 
-2. Fix user lists....
+* Fix user lists....
 
-3. Add total concurrent users
+* Add total concurrent users
 
-4. Add removal of groups (admin users?)
+* Add removal of groups (automatic - based on inactivity, except the default group?)
 
-5. Passworded groups
+* Passworded groups?
 
-6. Fix Autolinks (kind of implemented)
+* Fix "Current Group" after clicking the cancel button while in a different group
 
-7. Fix "Current Group" after clicking the cancel button while in a different group
+* Remove firebase dependency, load stuf using ajax and from a database
 
-8. Beta?
+* When user says something twice, do something similar to facebook? (adds content to last li, instead of creating a new one)
 
-9. When user says something twice, do something similar to facebook?
-
-* Fix bugs / warnings
+* Fix all the other bugs...
 
 ### Current Features
-
-* Can easily embed into a website
 
 * Able to chat to people, either anonymously or with a name
 
 * Able to create and join chat (groups) rooms
 
-* All shown and stored in real-time using the Firebase API
+* All shown and stored in real-time using the Firebase API (temporary)
 
 ### Installation
 
-1. Embed the js to your header
+1. Embed the js files to your header (eventually only one file)
 
-2. Change firebaseURL to your own firebase database (optional, but do it)
+2. Change firebaseURL to your own firebase database (optional)
 
 3. Done?
 
 ### Other
 
-I have a few projects for school that I need to finish up before I can start working on these personal projects and fixing them up (1-2 weeks?).
-
-Have fun!
+Development will be slow depending on demand.
