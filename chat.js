@@ -70,16 +70,18 @@ function showMessages(fb){
         
             /* if text contains http convert into an anchor _blank */
             
-            var text = message.text;
+            //var text = message.text;
             
             // supposed to create links...
-            var text = text.replace(/(>|<a[^<>]+href=['"])?(https?:\/\/([-a-z0-9]+\.)+[a-z]{2,5}(\/[-a-z0-9!#()\/?&.,]*[^ !#?().,])?)/gi, function($0, $1, $2){
+            /*var text = text.replace(/(>|<a[^<>]+href=['"])?(https?:\/\/([-a-z0-9]+\.)+[a-z]{2,5}(\/[-a-z0-9!#()\/?&.,]*[^ !#?().,])?)/gi, function($0, $1, $2){
                 return ($1 ? $0 : '<a href="' + $2 + '" target="_blank">' + $2 + '</a>');
             });
             // convert protocol-less URLs into links
             var text = message.text.replace(/(:\/\/|>)?\b(([-a-z0-9]+\.)+[a-z]{2,5}(\/[-a-z0-9!#()\/?&.]*[^ !#?().,])?)/gi, function($0, $1, $2){
                 return ($1 ? $0 : '<a href="http://' + $2 + '">' + $2 + '</a>');
-            });
+            });*/
+            
+            var text = Autolinker.link(message.text);
         
             $('<li/>')
                 .attr('id', getMessageId(snapshot))

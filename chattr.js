@@ -20,7 +20,13 @@ function loadDependency(src, callback){
 function loadFirebase(){
     // Add Firebase
     console.log('loadFirebase: loading firebase');
-    loadDependency("https://cdn.firebase.com/js/client/1.0.15/firebase.js", dependCallback);
+    loadDependency("https://cdn.firebase.com/js/client/1.0.15/firebase.js", loadAutolinker);
+}
+
+function loadAutolinker(){
+    // Add Autolinker
+    console.log('loadAutolinker: loading autolinker');
+    loadDependency("https://raw.githubusercontent.com/gregjacobs/Autolinker.js/0.11.2/dist/Autolinker.min.js", dependCallback);
 }
 
 function injectDependencies(){
