@@ -1,4 +1,4 @@
-/* Chattr - Made by Jeremy Plsek. Contribution by Charlie and Ethan. Initiated at CodeDay Boston */
+/* Chattr - Started by Jeremy Plsek. Contribution by Charlie and Ethan. Initiated at CodeDay Boston */
 
 var cnt = 0; // wut ??
 
@@ -35,23 +35,20 @@ function injectDependencies(){
 }
 
 function loadChattr(){
-    // 1 ////////////////////////////////////////////////////////////////////////////////////////
-    // 4 ////////////////////////////////////////////////////////////////////////////////////////
+
     loadPanel();
     
     bindEvents();
     
-    // 2 ////////////////////////////////////////////////////////////////////////////////////////
     $("#shrink").hide();
-
     $('#capanel').hide();
+    
     $('#capanel-toggle').click(function(){
         $('#capanel').toggle();
         $('#capanel-toggle').toggle();
         scroll();
     });
     
-    // 3 ////////////////////////////////////////////////////////////////////////////////////////
     var nameField = $('#capanel-name').val();
 
     console.log("Using url: " + firebaseURL);

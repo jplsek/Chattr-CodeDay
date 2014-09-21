@@ -13,7 +13,7 @@
         }
     </style>
 
-    <!-- required (all you need!) -->
+    <!-- required -->
 
     <script src="panel.js"></script>
     <script src="chat.js"></script>
@@ -45,7 +45,7 @@
 <body>
 
     <h1>Chattr!</h1>
-    <p><small>This is an alpha version. Please do not use this in production until it hits beta! Right now, this has been only tested in firefox and moderatly in chrome.</small></p>
+    <p><small>This is an alpha version. Please do not use this in production until it hits beta! Right now, this has been only tested in firefox and moderately in chrome.</small></p>
 
     <h3>Set up with:</h3>
     <code><pre>
@@ -56,9 +56,12 @@
         &lt;/script&gt;
 
     </pre></code>
+    
+    <h2>In alpha testing, the bookmarklet will not work.</h2>
+    <h4>When beta hits, a minified version containing the separate js files will be used as the bookmarklet.</h4>
 
-    Chattr! Bookmarklet: <a href="javascript:(function(){s=document.createElement('script');s.src='https://raw.githubusercontent.com/jplsek/Chattr-CodeDay/master/chattr.js';document.body.appendChild(s);})();">Chattr!</a>
-    <p>Note: The bookmarklet uses github, and I don't for you recommend to use it. This will change on release and use a proper CDN. There is a problem where this bookmarklet will be cached upon first use, and will remain cached even after the repository gets updated.</p>
+    Chattr! Bookmarklet: <a href="javascript:(function(){s=document.createElement('script');s.src='https://raw.githubusercontent.com/jplsek/Chattr-CodeDay/master/chattr.min.js';document.body.appendChild(s);})();">Chattr!</a>
+    <p>Note: The bookmarklet uses github, and I don't recommend for you to use it. This will change on release and use a proper CDN. There is a problem where this bookmarklet will be cached upon first use, and will remain cached even after the repository gets updated.</p>
 
 </body>
 </html>

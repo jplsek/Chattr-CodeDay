@@ -18,11 +18,13 @@ function bindEvents(){
         $("#capanel #enlarge").hide();
         $("#capanel #shrink").show();
     });
+    
     /*$("#capanel #full").click(function(){
         $('#capanel').css("width", 'calc(100% - 20px)');
         $('#capanel').css("height", 'calc(100% - 20px)');
         $('#capanel .textbox').css("height", '60%');
     });*/
+    
     $("#capanel #shrink").click(function(){
         $('#capanel').removeAttr('style');
         $('#capanel').removeAttr('style');
@@ -30,6 +32,7 @@ function bindEvents(){
         $("#capanel #enlarge").show();
         $("#capanel #shrink").hide();
     });
+    
     $("#capanel #close").click(function(){
         $("#capanel").hide();
         $('#capanel-toggle').show();
