@@ -24,6 +24,8 @@ function injectDependencies(){
     // Add jQuery
     if(!("$" in window)){ // Is jquery incuded?
         loadDependency("//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", loadFirebase);
+    } else {
+        loadFirebase();
     }
 }
 
