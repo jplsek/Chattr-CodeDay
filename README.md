@@ -33,6 +33,8 @@ All that needs to be done is to include the script into your website and your go
 
 * When user says something twice, do something similar to facebook? (adds content to last li, instead of creating a new one)
 
+* When a user joins / leaves, only show that information on that load (ie, not storing it in the database)
+
 * Fix all the other bugs...
 
 ### Current Features
