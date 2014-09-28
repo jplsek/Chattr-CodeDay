@@ -9,9 +9,11 @@ All that needs to be done is to include the script into your website and your go
 
 ### User installation
 
-1. Make this link a bookmark: [Chattr!](javascript:(function(){s=document.createElement('script');s.src='https://raw.githubusercontent.com/jplsek/Chattr-CodeDay/master/chattr.min.js';document.body.appendChild(s);})();) (Drag and drop the link into your bookmark bar.)
+* Make this the LOCATION of a bookmark (the link will change to a proper CDN in the future): 
 
-2. Click on the bookmark while on any website to open the chat session.
+javascript:(function(){s=document.createElement('script');s.src='https://raw.githubusercontent.com/jplsek/Chattr-CodeDay/master/chattr.min.js';document.body.appendChild(s);})();
+
+* Click on the bookmark while on any website to open the chat session.
 
 * Note: some websites don't allow execution of inline code (like github, however google works as a good test to see if it works).
 
